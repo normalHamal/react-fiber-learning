@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import ExampleApplication from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const start = new Date().getTime();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(
+  <ExampleApplication />,
+  document.getElementById('root')
+);
+
+function update() {
+  const elapsed = new Date().getTime() - start;
+  const t = (elapsed / 1000) % 10;
+  const scale = 1 + (t > 5 ? 10 - t : t) / 10;
+  document.querySelector('#anim').style.transform = 'scaleX(' + (scale / 2.1) + ') scaleY(0.7) translateZ(0.1px)';
+  requestAnimationFrame(update);
+}
+requestAnimationFrame(update);
