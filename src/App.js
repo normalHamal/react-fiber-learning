@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 const dotStyle = {
   position: 'absolute',
@@ -112,9 +111,7 @@ class ExampleApplication extends React.Component {
     this.intervalID = setInterval(this.tick, 1000);
   }
   tick() {
-    ReactDOM.unstable_deferredUpdates(() => {
-      this.setState(state => ({ seconds: (state.seconds % 10) + 1 }));
-    });
+    this.setState(state => ({ seconds: (state.seconds % 10) + 1 }));
   }
   componentWillUnmount() {
     clearInterval(this.intervalID);
