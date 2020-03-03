@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from "react-dom";
+import { unstable_scheduleWork } from "schedule";
 
 const dotStyle = {
   position: 'absolute',
@@ -112,7 +112,7 @@ class ExampleApplication extends React.Component {
     this.intervalID = setInterval(this.tick, 1000);
   }
   tick() {
-    ReactDom.unstable_scheduleWork(() => {
+    unstable_scheduleWork(() => {
       this.setState(state => ({ seconds: (state.seconds % 10) + 1 }));
     });
     // this.setState(state => ({ seconds: (state.seconds % 10) + 1 }));
