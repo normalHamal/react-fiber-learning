@@ -5,7 +5,7 @@ import ExampleApplication from './App';
 const start = new Date().getTime();
 
 ReactDOM.render(
-  <ExampleApplication />,
+  <React.unstable_AsyncMode><ExampleApplication /></React.unstable_AsyncMode>,
   document.getElementById('root')
 );
 
