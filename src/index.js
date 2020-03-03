@@ -5,7 +5,7 @@ import ExampleApplication from './App';
 const start = new Date().getTime();
 
 ReactDOM.render(
-  <ExampleApplication />,
+  <React.unstable_ConcurrentMode><ExampleApplication /></React.unstable_ConcurrentMode>,
   document.getElementById('root')
 );
 
