@@ -16,4 +16,5 @@ function update() {
   document.querySelector('#anim').style.transform = 'scaleX(' + (scale / 2.1) + ') scaleY(0.7) translateZ(0.1px)';
   requestAnimationFrame(update);
 }
+
 requestAnimationFrame(update);
