@@ -29,6 +29,8 @@ unstable_ConcurrentMode: [preview](https://react-fiber-learning-7dtq1tz0e.now.sh
 
 unstable_createRoot: [preview](https://react-fiber-learning-gfkp6j54a.now.sh/)
 
+vue: [preview](https://sdp.normalhamal.now.sh/)
+
 ## 各分支compare详情
 
 **unstable_deferredUpdates vs master**
@@ -87,3 +89,7 @@ ReactDOM.render(
 -  document.getElementById('root')
 - );
 ```
+
+**vue vs master**
+
+一个是vue实现的，一个是react
