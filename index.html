@@ -9,28 +9,64 @@
     </div>
     <script src="js/react.development.js"></script>
     <script src="js/react-dom.development.js"></script>
+    <script src="js/scheduler.development.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
     <script type="text/babel">
-      const List = (props) => {
-        return (
-          <React.Fragment>
-          {Array.from({ length: props.len }).map((_, i) => (<div key={i}>{i}</div>))}
-          </React.Fragment>
-        )
+      class List extends React.Component {
+        componentWillUpdate() {
+          console.error('List componentWillUpdata fired');
+        }
+
+        componentWillMount() {
+          console.error('List componentWillMount fired');
+        }
+
+        componentWillReceiveProps() {
+          console.error('List componentWillReceiveProps fired');
+        }
+
+        render() {
+          const { props } = this;
+
+          return (
+            <React.Fragment>
+            <h2>{props.text}</h2>
+            {Array.from({ length: props.len }).map((_, i) => (<div key={i}>{i}</div>))}
+            </React.Fragment>
+          )
+        }
       }
 
       class App extends React.Component {
         constructor() {
           super();
-          this.state = { len: 0 };
+          this.state = { len: 0, text: '' };
         }
 
-        handleClick() {
-          this.setState((state) => ({ len: state.len + 1 }));
+        componentWillUpdate() {
+          console.error('App componentWillUpdata fired');
         }
 
-        onDelete() {
-          this.setState((state) => ({ len: state.len - 1 }));
+        componentWillMount() {
+          console.error('App componentWillMount fired');
+        }
+
+        componentWillReceiveProps() {
+          console.error('App componentWillReceiveProps fired');
+        }
+
+        handleClick(incr) {
+          this.setState((state) => ({ len: state.len + incr }));
+          this.runHighPriority();
+        }
+
+        runHighPriority() {
+          Scheduler.unstable_scheduleCallback(Scheduler.unstable_NormalPriority, () => {
+            this.setState({
+              text: '插入一个高优先级的任务',
+              state: 10
+            });
+          });
         }
 
         render() {
@@ -39,9 +75,9 @@
           return (
             <React.Fragment>
               <div>{len}</div>
-              <button onClick={this.handleClick.bind(this)}>increasing</button>
-              <button onClick={this.onDelete.bind(this)}>delete</button>
-              <List len={len} />
+              <button onClick={this.handleClick.bind(this, 2)}>一次递增2</button>
+              <button onClick={this.handleClick.bind(this, 1000)}>一次递增1000</button>
+              <List len={len} text={this.state.text} />
             </React.Fragment>
           );
         }
@@ -50,6 +86,7 @@
       ReactDOM.createRoot(
         document.getElementById('container')
       ).render(<App />);
+      // ReactDOM.render(<App />, document.getElementById('container'));
     </script>
   </body>
 </html>
