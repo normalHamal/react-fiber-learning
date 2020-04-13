@@ -14,7 +14,7 @@
       const List = (props) => {
         return (
           <React.Fragment>
-          {Array.from({ length: props.len }).map((_, i) => (<div>i</div>))}
+          {Array.from({ length: props.len }).map((_, i) => (<div key={i}>{i}</div>))}
           </React.Fragment>
         )
       }
@@ -29,6 +29,10 @@
           this.setState((state) => ({ len: state.len + 1 }));
         }
 
+        onDelete() {
+          this.setState((state) => ({ len: state.len - 1 }));
+        }
+
         render() {
           const { len } = this.state;
 
@@ -36,6 +40,7 @@
             <React.Fragment>
               <div>{len}</div>
               <button onClick={this.handleClick.bind(this)}>increasing</button>
+              <button onClick={this.onDelete.bind(this)}>delete</button>
               <List len={len} />
             </React.Fragment>
           );

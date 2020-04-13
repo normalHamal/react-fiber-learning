@@ -23691,7 +23691,12 @@ var logWorkInProgress = function(msg) {
   } else {
     console.dir(workInProgress.elementType);
   }
-}
+};
+
+var logNextEffect = function(nextEffect) {
+  console.dir(nextEffect.elementType);
+  console.log('effectTag: ', nextEffect.effectTag);
+};
 
 var renderExpirationTime = NoWork; // Whether to root completed, errored, suspended, etc.
 
@@ -25387,6 +25392,7 @@ function commitRootImpl(root, renderPriorityLevel) {
 }
 
 function commitBeforeMutationEffects() {
+  console.log('%c begin commitBeforeMutationEffects', 'color: #fff;background: #6190e8;');
   while (nextEffect !== null) {
     var effectTag = nextEffect.effectTag;
 
@@ -25394,7 +25400,10 @@ function commitBeforeMutationEffects() {
       setCurrentFiber(nextEffect);
       recordEffect();
       var current$$1 = nextEffect.alternate;
+      console.log('%c begin commitBeforeMutationLifeCycles', 'color: #fff;background: #6190e8;');
+      logNextEffect(nextEffect);
       commitBeforeMutationLifeCycles(current$$1, nextEffect);
+      console.log('%c commitBeforeMutationLifeCycles done', 'background: #6dea5a;color: #fff;');
       resetCurrentFiber();
     }
 
@@ -25412,11 +25421,14 @@ function commitBeforeMutationEffects() {
 
     nextEffect = nextEffect.nextEffect;
   }
+  console.log('%c commitBeforeMutationEffects done', 'background: #6dea5a;color: #fff;');
 }
 
 function commitMutationEffects(root, renderPriorityLevel) {
   // TODO: Should probably move the bulk of this function to commitWork.
+  console.log('%c begin commitMutationEffects', 'color: #fff;background: #6190e8;');
   while (nextEffect !== null) {
+    logNextEffect(nextEffect);
     setCurrentFiber(nextEffect);
     var effectTag = nextEffect.effectTag;
 
@@ -25497,10 +25509,12 @@ function commitMutationEffects(root, renderPriorityLevel) {
     resetCurrentFiber();
     nextEffect = nextEffect.nextEffect;
   }
+  console.log('%c commitMutationEffects done', 'background: #6dea5a;color: #fff;');
 }
 
 function commitLayoutEffects(root, committedExpirationTime) {
   // TODO: Should probably move the bulk of this function to commitWork.
+  console.log('%c begin commitLayoutEffects', 'color: #fff;background: #6190e8;');
   while (nextEffect !== null) {
     setCurrentFiber(nextEffect);
     var effectTag = nextEffect.effectTag;
@@ -25508,7 +25522,10 @@ function commitLayoutEffects(root, committedExpirationTime) {
     if (effectTag & (Update | Callback)) {
       recordEffect();
       var current$$1 = nextEffect.alternate;
+      console.log('%c begin commitLifeCycles', 'color: #fff;background: #6190e8;');
+      logNextEffect(nextEffect);
       commitLifeCycles(root, current$$1, nextEffect, committedExpirationTime);
+      console.log('%c commitLifeCycles done', 'background: #6dea5a;color: #fff;');
     }
 
     if (effectTag & Ref) {
@@ -25519,6 +25536,7 @@ function commitLayoutEffects(root, committedExpirationTime) {
     resetCurrentFiber();
     nextEffect = nextEffect.nextEffect;
   }
+  console.log('%c commitLayoutEffects done', 'background: #6dea5a;color: #fff;');
 }
 
 function flushPassiveEffects() {
