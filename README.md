@@ -33,6 +33,8 @@ vue: [preview](https://sdp-l6706muf3.now.sh/)
 
 debug-for-reconciliation: [preview](https://sdp-9gvztq5o3.now.sh)
 
+debug-for-interrupt: [preview](https://sdp-6os525uzh.now.sh/)
+
 ## 各分支compare详情
 
 **unstable_deferredUpdates vs master**
@@ -100,3 +102,7 @@ ReactDOM.render(
 **debug-for-reconciliation vs master**
 
 debug-for-reconciliation是一个在react-dom.development.js中注入了各种埋点日志的分支。你可以清晰地看到整个reconciliation过程中workInprogress和nextEffect的流向。
+
+**debug-for-interrupt vs master**
+
+debug-for-interrupt是一个也在react-dom.development.js中注入了各种埋点日志的分支。你可以清晰地看到整个reconciliation过程中突然被高优先级任务打断时的workInprogress流向。
