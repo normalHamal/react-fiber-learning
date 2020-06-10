@@ -23,28 +23,28 @@ class App extends React.Component {
   handleClick() {
     // A1 - B2 - C1 - D2
     Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
-      console.error('Insert Update A1');
+      console.log('%c Insert Update A1', 'color: #fff;background: #6190e8;');
       this.setState(state => ({
         text: state.text + 'A',
       }));
     });
 
     Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
-      console.error('Insert Update B2');
+      console.log('%c Insert Update B2', 'color: #fff;background: #6190e8;');
       this.setState(state => ({
         text: state.text + 'B',
       }));
     });
 
     Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
-      console.error('Insert Update C1');
+      console.log('%c Insert Update C1', 'color: #fff;background: #6190e8;');
       this.setState(state => ({
         text: state.text + 'C',
       }));
     });
 
     Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
-      console.error('Insert Update D2');
+      console.log('%c Insert Update D2', 'color: #fff;background: #6190e8;');
       this.setState(state => ({
         text: state.text + 'D',
       }));

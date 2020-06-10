@@ -13832,7 +13832,7 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
   var update = queue.firstUpdate;
   var resultState = newBaseState;
 
-  console.error('Begin process Updates and the base state is: ', resultState);
+  console.log('%c Begin process Updates and the base state is: ', 'color: #fff;background: #6190e8;', resultState);
   while (update !== null) {
     var updateExpirationTime = update.expirationTime;
 
@@ -13860,7 +13860,7 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
       // TODO: We should skip this update if it was already committed but currently
       // we have no way of detecting the difference between a committed and suspended
       // update here.
-      console.error('Process this Update：', update.payload);
+      console.log('%c Process this Update：', 'background: #6dea5a;color: #fff;', update.payload);
       markRenderEventTimeAndConfig(updateExpirationTime, update.suspenseConfig); // Process it and compute a new result.
 
       resultState = getStateFromUpdate(workInProgress, queue, update, resultState, props, instance);
@@ -13962,7 +13962,7 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
 
-  console.error('After process Updates and the result state is: ', resultState);
+  console.log('%c After process Updates and the result state is: ', 'color: #fff;background: #ff6060;',  resultState);
   {
     currentlyProcessingQueue = null;
   }
