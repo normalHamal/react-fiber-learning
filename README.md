@@ -35,7 +35,7 @@ debug-for-reconciliation: [preview](https://sdp-9gvztq5o3.now.sh)
 
 debug-for-interrupt: [preview](https://sdp-6os525uzh.now.sh/)
 
-debug-for-processUpdates: [preview](https://sdp-i7v6wbtin.now.sh/)
+debug-for-processUpdates: [preview](https://sdp-1a0l8e542.now.sh/)
 
 ## 各分支compare详情
 
