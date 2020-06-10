@@ -2794,6 +2794,7 @@ var LOW_PRIORITY_TIMEOUT = 10000; // Never times out
 var IDLE_PRIORITY = maxSigned31BitInt; // Tasks are stored on a min heap
 
 var taskQueue = [];
+
 var timerQueue = []; // Incrementing id counter. Used to maintain insertion order.
 
 var taskIdCounter = 1; // Pausing the scheduler is useful for debugging.
@@ -2902,7 +2903,6 @@ function workLoop(hasTimeRemaining, initialTime) {
   var currentTime = initialTime;
   advanceTimers(currentTime);
   currentTask = peek(taskQueue);
-
   while (currentTask !== null && !(enableSchedulerDebugging && isSchedulerPaused)) {
     if (currentTask.expirationTime > currentTime && (!hasTimeRemaining || shouldYieldToHost())) {
       // This currentTask hasn't expired, and we've reached the deadline.
@@ -2937,7 +2937,6 @@ function workLoop(hasTimeRemaining, initialTime) {
     } else {
       pop(taskQueue);
     }
-
     currentTask = peek(taskQueue);
   } // Return whether there's additional work
 

@@ -12,81 +12,82 @@
     <script src="js/scheduler.development.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
     <script type="text/babel">
-      class List extends React.Component {
-        componentWillUpdate() {
-          console.error('List componentWillUpdata fired');
-        }
+let lastText = '';
+class Low extends React.Component {
+  componentWillUpdate(nextProps, nextState) {
+    console.error('Low componentWillUpdata fired', nextProps);
+    if (lastText === this.props.text) {
+      console.error('Low componentWillUpdata fired again');
+    }
+    lastText = this.props.text;
 
-        componentWillMount() {
-          console.error('List componentWillMount fired');
-        }
+    const start = Date.now();
+    while (Date.now() - start < 250);
+  }
 
-        componentWillReceiveProps() {
-          console.error('List componentWillReceiveProps fired');
-        }
+  shouldComponentUpdate(nextProps) {
+    return nextProps.text !== this.props.text;
+  }
 
-        render() {
-          const { props } = this;
+  render() {
+    return (
+      <h2>{this.props.text}</h2>
+    )
+  }
+}
 
-          return (
-            <React.Fragment>
-            <h2>{props.text}</h2>
-            {Array.from({ length: props.len }).map((_, i) => (<div key={i}>{i}</div>))}
-            </React.Fragment>
-          )
-        }
-      }
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = { text: 'initial' };
+  }
 
-      class App extends React.Component {
-        constructor() {
-          super();
-          this.state = { len: 0, text: '' };
-        }
+  handleClick() {
+    // A1 - B2 - C1 - D2
+    Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
+      console.error('Insert Update A1');
+      this.setState({
+        text: 'A',
+      });
+    });
 
-        componentWillUpdate() {
-          console.error('App componentWillUpdata fired');
-        }
+    Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
+      console.error('Insert Update B2');
+      this.setState({
+        text: 'B',
+      });
+    });
 
-        componentWillMount() {
-          console.error('App componentWillMount fired');
-        }
+    Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
+      console.error('Insert Update C1');
+      this.setState({
+        text: 'C',
+      });
+    });
 
-        componentWillReceiveProps() {
-          console.error('App componentWillReceiveProps fired');
-        }
+    Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
+      console.error('Insert Update D2');
+      this.setState({
+        text: 'D',
+      });
+    });
+  }
 
-        handleClick(incr) {
-          this.setState((state) => ({ len: state.len + incr }));
-          this.runHighPriority();
-        }
+  render() {
+    const { text } = this.state;
 
-        runHighPriority() {
-          Scheduler.unstable_scheduleCallback(Scheduler.unstable_NormalPriority, () => {
-            this.setState({
-              text: '插入一个高优先级的任务',
-              state: 10
-            });
-          });
-        }
+    return (
+      <React.Fragment>
+        <button onClick={this.handleClick.bind(this)}>开始模拟调度</button>
+        <Low text={text} />
+      </React.Fragment>
+    );
+  }
+}
 
-        render() {
-          const { len } = this.state;
-
-          return (
-            <React.Fragment>
-              <div>{len}</div>
-              <button onClick={this.handleClick.bind(this, 2)}>一次递增2</button>
-              <button onClick={this.handleClick.bind(this, 1000)}>一次递增1000</button>
-              <List len={len} text={this.state.text} />
-            </React.Fragment>
-          );
-        }
-      }
-
-      ReactDOM.createRoot(
-        document.getElementById('container')
-      ).render(<App />);
-      // ReactDOM.render(<App />, document.getElementById('container'));
+ReactDOM.createRoot(
+  document.getElementById('container')
+).render(<App />);
     </script>
   </body>
 </html>

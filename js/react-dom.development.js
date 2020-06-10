@@ -1316,7 +1316,7 @@ var disableJavaScriptURLs = false; // React Fire: prevent the value and checked 
 var disableInputAttributeSyncing = false; // These APIs will no longer be "unstable" in the upcoming 16.7 release,
 // Control this behavior with a flag to support 16.6 minor releases in the meanwhile.
 
-var exposeConcurrentModeAPIs = true;
+var exposeConcurrentModeAPIs = false;
 var warnAboutShorthandPropertyCollision = false; // Experimental React Flare event system and event components support.
 
 var enableFlareAPI = false; // Experimental Host Component support.
@@ -13832,6 +13832,7 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
   var update = queue.firstUpdate;
   var resultState = newBaseState;
 
+  console.error('Begin process Updates and the base state is: ', resultState);
   while (update !== null) {
     var updateExpirationTime = update.expirationTime;
 
@@ -13859,6 +13860,7 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
       // TODO: We should skip this update if it was already committed but currently
       // we have no way of detecting the difference between a committed and suspended
       // update here.
+      console.error('Process this Update：', update.payload);
       markRenderEventTimeAndConfig(updateExpirationTime, update.suspenseConfig); // Process it and compute a new result.
 
       resultState = getStateFromUpdate(workInProgress, queue, update, resultState, props, instance);
@@ -23676,28 +23678,6 @@ var workInProgressRoot = null; // The fiber we're working on
 
 var workInProgress = null; // The expiration time we're rendering
 
-var logWorkInProgress = function(msg) {
-  console.log('%c ' + msg, 'color: #fff;background: #6190e8;');
-  if (!workInProgress) {
-    return console.log('null');
-  }
-
-  if (workInProgress.tag === 3) {
-    return console.log('HostRoot');
-  }
-
-  if (workInProgress.elementType === null) {
-    console.dir(workInProgress);
-  } else {
-    console.dir(workInProgress.elementType);
-  }
-};
-
-var logNextEffect = function(nextEffect) {
-  console.dir(nextEffect.elementType);
-  console.log('effectTag: ', nextEffect.effectTag);
-};
-
 var renderExpirationTime = NoWork; // Whether to root completed, errored, suspended, etc.
 
 var workInProgressRootExitStatus = RootIncomplete; // A fatal error, if one is thrown
@@ -24845,9 +24825,7 @@ function workLoopSync() {
 function workLoopConcurrent() {
   // Perform work until Scheduler asks us to yield
   while (workInProgress !== null && !shouldYield()) {
-    logWorkInProgress('before next performUnitOfWork, the value of workInProgress is: ');
     workInProgress = performUnitOfWork(workInProgress);
-    console.log('%c performUnitOfWork done', 'background: #6dea5a;color: #fff;');
   }
 }
 
@@ -24884,7 +24862,6 @@ function completeUnitOfWork(unitOfWork) {
   // Attempt to complete the current unit of work, then move to the next
   // sibling. If there are no more siblings, return to the parent fiber.
   workInProgress = unitOfWork;
-  logWorkInProgress('begin completeUnitOfWork and the current unit(workInProgress) is: ');
 
   do {
     // The current, flushed, state of this fiber is the alternate. Ideally
@@ -25004,7 +24981,6 @@ function completeUnitOfWork(unitOfWork) {
 
 
     workInProgress = returnFiber;
-    logWorkInProgress('because there is no siblingFiber in the current unit(workInProgress), so return to the parent(returnFiber)');
   } while (workInProgress !== null); // We've reached the root.
 
 
@@ -25392,7 +25368,6 @@ function commitRootImpl(root, renderPriorityLevel) {
 }
 
 function commitBeforeMutationEffects() {
-  console.log('%c begin commitBeforeMutationEffects', 'color: #fff;background: #6190e8;');
   while (nextEffect !== null) {
     var effectTag = nextEffect.effectTag;
 
@@ -25400,10 +25375,7 @@ function commitBeforeMutationEffects() {
       setCurrentFiber(nextEffect);
       recordEffect();
       var current$$1 = nextEffect.alternate;
-      console.log('%c begin commitBeforeMutationLifeCycles', 'color: #fff;background: #6190e8;');
-      logNextEffect(nextEffect);
       commitBeforeMutationLifeCycles(current$$1, nextEffect);
-      console.log('%c commitBeforeMutationLifeCycles done', 'background: #6dea5a;color: #fff;');
       resetCurrentFiber();
     }
 
@@ -25421,14 +25393,11 @@ function commitBeforeMutationEffects() {
 
     nextEffect = nextEffect.nextEffect;
   }
-  console.log('%c commitBeforeMutationEffects done', 'background: #6dea5a;color: #fff;');
 }
 
 function commitMutationEffects(root, renderPriorityLevel) {
   // TODO: Should probably move the bulk of this function to commitWork.
-  console.log('%c begin commitMutationEffects', 'color: #fff;background: #6190e8;');
   while (nextEffect !== null) {
-    logNextEffect(nextEffect);
     setCurrentFiber(nextEffect);
     var effectTag = nextEffect.effectTag;
 
@@ -25509,12 +25478,10 @@ function commitMutationEffects(root, renderPriorityLevel) {
     resetCurrentFiber();
     nextEffect = nextEffect.nextEffect;
   }
-  console.log('%c commitMutationEffects done', 'background: #6dea5a;color: #fff;');
 }
 
 function commitLayoutEffects(root, committedExpirationTime) {
   // TODO: Should probably move the bulk of this function to commitWork.
-  console.log('%c begin commitLayoutEffects', 'color: #fff;background: #6190e8;');
   while (nextEffect !== null) {
     setCurrentFiber(nextEffect);
     var effectTag = nextEffect.effectTag;
@@ -25522,10 +25489,7 @@ function commitLayoutEffects(root, committedExpirationTime) {
     if (effectTag & (Update | Callback)) {
       recordEffect();
       var current$$1 = nextEffect.alternate;
-      console.log('%c begin commitLifeCycles', 'color: #fff;background: #6190e8;');
-      logNextEffect(nextEffect);
       commitLifeCycles(root, current$$1, nextEffect, committedExpirationTime);
-      console.log('%c commitLifeCycles done', 'background: #6dea5a;color: #fff;');
     }
 
     if (effectTag & Ref) {
@@ -25536,7 +25500,6 @@ function commitLayoutEffects(root, committedExpirationTime) {
     resetCurrentFiber();
     nextEffect = nextEffect.nextEffect;
   }
-  console.log('%c commitLayoutEffects done', 'background: #6dea5a;color: #fff;');
 }
 
 function flushPassiveEffects() {
@@ -27927,7 +27890,7 @@ var ReactDOM = {
   }
 };
 
-if (exposeConcurrentModeAPIs) {
+if (true) {
   ReactDOM.createRoot = createRoot;
   ReactDOM.createBlockingRoot = createBlockingRoot;
   ReactDOM.unstable_discreteUpdates = discreteUpdates$1;
