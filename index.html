@@ -12,64 +12,42 @@
     <script src="js/scheduler.development.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
     <script type="text/babel">
-let lastText = '';
-class Low extends React.Component {
-  componentWillUpdate(nextProps, nextState) {
-    console.error('Low componentWillUpdata fired', nextProps);
-    if (lastText === this.props.text) {
-      console.error('Low componentWillUpdata fired again');
-    }
-    lastText = this.props.text;
-
-    const start = Date.now();
-    while (Date.now() - start < 250);
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return nextProps.text !== this.props.text;
-  }
-
-  render() {
-    return (
-      <h2>{this.props.text}</h2>
-    )
-  }
-}
+const Low = (props) => <h2>{props.text}</h2>
 
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { text: 'initial' };
+    this.state = { text: '' };
   }
 
   handleClick() {
     // A1 - B2 - C1 - D2
     Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
       console.error('Insert Update A1');
-      this.setState({
-        text: 'A',
-      });
+      this.setState(state => ({
+        text: state.text + 'A',
+      }));
     });
 
     Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
       console.error('Insert Update B2');
-      this.setState({
-        text: 'B',
-      });
+      this.setState(state => ({
+        text: state.text + 'B',
+      }));
     });
 
     Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
       console.error('Insert Update C1');
-      this.setState({
-        text: 'C',
-      });
+      this.setState(state => ({
+        text: state.text + 'C',
+      }));
     });
 
     Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
       console.error('Insert Update D2');
-      this.setState({
-        text: 'D',
-      });
+      this.setState(state => ({
+        text: state.text + 'D',
+      }));
     });
   }
 

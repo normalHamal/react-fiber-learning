@@ -13962,6 +13962,7 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
 
+  console.error('After process Updates and the result state is: ', resultState);
   {
     currentlyProcessingQueue = null;
   }
