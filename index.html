@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="width: 100%; height: 100%; overflow: hidden">
+<html>
   <head>
     <meta charset="utf-8">
     <title>Fiber reconciliation</title>
@@ -12,7 +12,29 @@
     <script src="js/scheduler.development.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
     <script type="text/babel">
-const Low = (props) => <h2>{props.text}</h2>
+class Low extends React.Component {
+  componentWillUpdate(nextProps) {
+    console.log('%c componentWillUpdata fired', 'color: #fff;background: #6190e8;', nextProps);
+  }
+
+  componentWillMount() {
+    console.log('%c componentWillMount fired', 'color: #fff;background: #6190e8;');
+  }
+
+  componentWillReceiveProps(args) {
+    console.log('%c componentWillReceiveProps fired', 'color: #fff;background: #6190e8;', args);
+  }
+
+  render() {
+    const { props } = this;
+
+    return (
+      <React.Fragment>
+      {Array.from({ length: 100 }).map((_, i) => (<div key={i}><h2>{props.text}-{i}</h2></div>))}
+      </React.Fragment>
+    )
+  }
+}
 
 class App extends React.Component {
   constructor() {
@@ -21,38 +43,25 @@ class App extends React.Component {
   }
 
   handleClick() {
-    // A1 - B2 - C1 - D2
-    Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
-      console.log('%c Insert Update A1', 'color: #fff;background: #6190e8;');
+    Scheduler.unstable_scheduleCallback(Scheduler.unstable_NormalPriority, () => {
+      console.log('%c 插入低优先级任务 B', 'color: #fff;background: #898b17;');
       this.setState(state => ({
-        text: state.text + 'A',
+        text: state.text + 'B'
       }));
     });
 
-    Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
-      console.log('%c Insert Update B2', 'color: #fff;background: #6190e8;');
+    Scheduler.unstable_scheduleCallback(Scheduler.unstable_UserBlockingPriority, () => {
+      console.log('%c 插入高优先级任务 A', 'color: #fff;background: #898b17;');
       this.setState(state => ({
-        text: state.text + 'B',
+        text: state.text + 'A'
       }));
-    });
-
-    Scheduler.unstable_runWithPriority(Scheduler.unstable_UserBlockingPriority, () => {
-      console.log('%c Insert Update C1', 'color: #fff;background: #6190e8;');
-      this.setState(state => ({
-        text: state.text + 'C',
-      }));
-    });
-
-    Scheduler.unstable_runWithPriority(Scheduler.unstable_NormalPriority, () => {
-      console.log('%c Insert Update D2', 'color: #fff;background: #6190e8;');
-      this.setState(state => ({
-        text: state.text + 'D',
-      }));
+    }, {
+      delay: 10
     });
   }
 
   render() {
-    const { text } = this.state;
+    const { text, isShow } = this.state;
 
     return (
       <React.Fragment>

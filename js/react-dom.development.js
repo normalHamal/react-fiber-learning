@@ -13832,7 +13832,6 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
   var update = queue.firstUpdate;
   var resultState = newBaseState;
 
-  console.log('%c Begin process Updates and the base state is: ', 'color: #fff;background: #6190e8;', resultState);
   while (update !== null) {
     var updateExpirationTime = update.expirationTime;
 
@@ -13860,7 +13859,6 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
       // TODO: We should skip this update if it was already committed but currently
       // we have no way of detecting the difference between a committed and suspended
       // update here.
-      console.log('%c Process this Update：', 'background: #6dea5a;color: #fff;', update.payload);
       markRenderEventTimeAndConfig(updateExpirationTime, update.suspenseConfig); // Process it and compute a new result.
 
       resultState = getStateFromUpdate(workInProgress, queue, update, resultState, props, instance);
@@ -13961,8 +13959,6 @@ function processUpdateQueue(workInProgress, queue, props, instance, renderExpira
   markUnprocessedUpdateTime(newExpirationTime);
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
-
-  console.log('%c After process Updates and the result state is: ', 'color: #fff;background: #ff6060;',  resultState);
   {
     currentlyProcessingQueue = null;
   }
@@ -24032,7 +24028,7 @@ function ensureRootIsScheduled(root) {
     // TODO: Instead of scheduling a new task, we should be able to change the
     // priority of the existing one.
 
-
+    console.log('%c 【cancelCallback】: 取消低优先级任务 ', 'color: #fff;background: #df3737;');
     cancelCallback(existingCallbackNode);
   }
 
@@ -24046,6 +24042,10 @@ function ensureRootIsScheduled(root) {
   } else if (disableSchedulerTimeoutBasedOnReactExpirationTime) {
     callbackNode = scheduleCallback(priorityLevel, performConcurrentWorkOnRoot.bind(null, root));
   } else {
+    if (existingCallbackNode && !existingCallbackNode.callback) {
+      console.log('%c scheduleCallback: 虽然低优先级任务被取消了，但是为了恢复我们创建一个新的调度任务！', 'color: #fff;background: #3dd58f;');
+    }
+
     callbackNode = scheduleCallback(priorityLevel, performConcurrentWorkOnRoot.bind(null, root), // Compute a task timeout based on the expiration time. This also affects
     // ordering because tasks are processed in timeout order.
     {
