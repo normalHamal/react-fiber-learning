@@ -37,6 +37,8 @@ debug-for-interrupt: [preview](https://sdp-6os525uzh.now.sh/)
 
 debug-for-processUpdates: [preview](https://sdp-1a0l8e542.now.sh/)
 
+debug-for-scheduleTask: [preview](https://sdp-c96r20ib8.now.sh/)
+
 ## 各分支compare详情
 
 **unstable_deferredUpdates vs master**
@@ -153,3 +155,7 @@ debug-for-processUpdates是一个通过在react-dom.development.js中注入了�
 // regardless of priority. Intermediate state may vary according to system
 // resources, but the final state is always the same.
 ```
+
+**debug-for-scheduleTask vs master**
+
+debug-for-processUpdates是一个通过在react-dom.development.js中注入了各种埋点日志后，清晰地展示了高优先级任务抢占低优先级任务后的调度流程的例子
